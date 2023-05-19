@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 
 import html
-from typing import List
-
 import requests
+
+from typing import List
 
 
 def parse_ud_cell(section: List[str], cell_content: str, apertium_tag: str=None) -> List[str]:
@@ -143,9 +143,6 @@ def scrape_tags():
 
             # is a leaf, a terminal node
             item_of_interest["t"] = True
-
-            # debug
-            # print("PAIR:", current, tag, item_of_interest)
 
             if len(current) == 1:
                 all_tags[current[0]][tag] = item_of_interest

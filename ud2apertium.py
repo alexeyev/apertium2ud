@@ -27,6 +27,8 @@ def _map2rules(tag_map):
 _MAP = json.load(open("tags_map.json", "r", encoding="utf-8"))
 _RULES = _map2rules(_MAP)
 
+ALL_APERTIUM_TAGS = {tagname: idx for idx, tagname in enumerate(sorted(list(set([t for k, v in _RULES for t in v]))))}
+
 
 def _feats2set(feats_map: dict):
     if feats_map is not None:
@@ -35,7 +37,6 @@ def _feats2set(feats_map: dict):
 
 
 def convert(upos: str, feats: Set[str]) -> List[str]:
-
     pool = {upos}.union(feats)
     results = []
 
@@ -75,7 +76,8 @@ if __name__ == "__main__":
         for word, upos, feats in sentence:
             feats = _feats2set(feats)
             aptm_tags = convert(upos, feats)
-            formatted_apertium_tags = "".join([f"<{t[0]}>" if len(t) == 1 else f"<{'?'.join(t) + '?'}>" for t in aptm_tags])
+            formatted_apertium_tags = "".join(
+                [f"<{t[0]}>" if len(t) == 1 else f"<{'?'.join(t) + '?'}>" for t in aptm_tags])
             print(word, upos, feats, "->")
             print(formatted_apertium_tags, "\n")
         print()
