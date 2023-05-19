@@ -79,7 +79,7 @@ def parse_ud_cell(section: List[str], cell_content: str, apertium_tag: str=None)
         else:
             raise Exception(f"Something's changed on the page in {section}, should update the parser")
 
-    return {"dummy": cell_content}
+    raise Exception(f"Something's changed on the page in {section}, should update the parser")
 
 
 def scrape_tags():
