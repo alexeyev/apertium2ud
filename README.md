@@ -19,12 +19,14 @@ python apertium_wiki_parser.py
 * Upload the converter as a package to PyPI
 * Tests: Apertium -> UD -> Apertium, UD -> Apertium -> UD (sometimes losses are inevitable)
 
-## Citation
+## How to cite
 
 Greatly appreciated, if you use this work.
 
+```
 @misc{apertium2ud2023alekseev,
   title     = {{alexeyev/apertium2ud: mapping tagsets}},
   year      = {2023},
   url       = {https://github.com/alexeyev/apertium2ud}
 }
+```

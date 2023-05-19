@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-#git clone git@github.com:UniversalDependencies/UD_Kyrgyz-KTMU.git
+git clone git@github.com:UniversalDependencies/UD_Kyrgyz-KTMU.git
+rm -rf UD_Kyrgyz-KTMU/.git
 python ud2apertium.py
 
 echo "**** Cloning apertium-kir, may take a while..."

@@ -19,7 +19,7 @@ def parse_ud_cell(section: List[str], cell_content: str, apertium_tag: str=None)
             elif not cell_content:
                 return {}
             return {"tags": [cell_content]}
-        elif section[-1] == "punct":
+        elif section[-1] == "punkt":
                 splitted = cell_content.split(" ")
                 result = {"tags": [splitted[0]]}
                 if len(splitted) > 1:
@@ -104,6 +104,8 @@ def scrape_tags():
 
             if name == "xml" or name == "chunk":
                 break
+            if name == "punct":
+                name = "punkt"
 
             depth = 0
 
@@ -138,6 +140,9 @@ def scrape_tags():
 
             item_of_interest = parse_ud_cell(current, item_of_interest, tag)
             item_of_interest["gloss"] = gloss
+
+            # is a leaf, a terminal node
+            item_of_interest["t"] = True
 
             # debug
             # print("PAIR:", current, tag, item_of_interest)
