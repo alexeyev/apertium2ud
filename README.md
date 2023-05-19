@@ -33,7 +33,7 @@ So far the conversion is far from perfect
 
 ## TODO
 
-* Should sections `chunks` and [XML tags](https://wiki.apertium.org/w/index.php?title=List_of_symbols#XML_tags) be added?
+* Should sections `chunks` and [XML tags](https://wiki.apertium.org/w/index.php?title=List_of_symbols#XML_tags) be added? [No](https://github.com/apertium/apertium/issues/185).
 * Add conversions Apertium -> UD, UD -> Apertium based on the constructed JSON file
 * Upload the converter as a package to PyPI
 * Tests: Apertium -> UD -> Apertium, UD -> Apertium -> UD (sometimes losses are inevitable)
