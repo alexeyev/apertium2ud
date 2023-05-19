@@ -2,7 +2,7 @@
 
 import json
 from collections import defaultdict
-from typing import List
+from typing import List, Set
 
 
 def _map2rules(tag_map):
@@ -14,7 +14,7 @@ def _map2rules(tag_map):
         name, item = queue.pop(0)
 
         if "t" in item:
-            key = tuple(item.get("tags", []) + item.get("feats", []))
+            key = tuple(item.get("tags", []) + sorted(item.get("feats", [])))
             value = name
             combination2tag[key].append(value)
         else:
@@ -31,12 +31,26 @@ _RULES = _map2rules(_MAP)
 def _feats2set(feats_map: dict):
     if feats_map is not None:
         return {f"{k}={v}" for k, v in feats_map.items()}
-    return None
+    return set([])
 
 
-def convert(upos: str, feats: str) -> List[str]:
-    # todo: iterate the rules and find the best-fitting thing
-    return []
+def convert(upos: str, feats: Set[str]) -> List[str]:
+
+    pool = {upos}.union(feats)
+    results = []
+
+    for keys_tuple, values_list in _RULES:
+        if len(keys_tuple) == 0:
+            break
+        matches = True
+        for key in keys_tuple:
+            if key not in pool:
+                matches = False
+                break
+        if matches:
+            results.append(values_list)
+
+    return results
 
 
 if __name__ == "__main__":
@@ -60,8 +74,8 @@ if __name__ == "__main__":
     for sentence in sentences:
         for word, upos, feats in sentence:
             feats = _feats2set(feats)
-            print(word)
-            print(upos)
-            print(feats)
-            print()
-        quit()
+            aptm_tags = convert(upos, feats)
+            formatted_apertium_tags = "".join([f"<{t[0]}>" if len(t) == 1 else f"<{'?'.join(t) + '?'}>" for t in aptm_tags])
+            print(word, upos, feats, "->")
+            print(formatted_apertium_tags, "\n")
+        print()
