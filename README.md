@@ -12,6 +12,7 @@ To build the machine-readable mapping, run
 python apertium_wiki_parser.py
 ```
 
+## UD to Apertium
 So far the conversion is far from perfect
 ```
 Кыз NOUN {'Number[psor]=Sing', 'Number=Sing', 'Case=Nom', 'Person[psor]=3', 'Person=3'} ->
