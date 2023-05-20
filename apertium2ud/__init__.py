@@ -22,8 +22,9 @@ from . import resources
 
 with pkg_resources.path(resources, "tags_map.json") as filepath:
     raw_text = open(filepath, "r+", encoding="utf-8").read().strip()
+    RAW_WIKI_MAP = json.loads(raw_text)
+    del raw_text
 
-RAW_WIKI_MAP = json.loads(raw_text)
 UD2APERTIUM_RULES = _map2rules(RAW_WIKI_MAP)
 
 POS_TAGS_LIST = sorted(list(set(RAW_WIKI_MAP["POS"].keys())
