@@ -4,15 +4,15 @@ import numpy as np
 
 from streamparser import parse, LexicalUnit
 from typing import Set, List
-from ud2apertium import ALL_APERTIUM_TAGS
+from apertium2ud import ALL_APERTIUM_TAGS_MAP
 
 
 def _vectorize_tags(tags_sets: List[Set[str]]) -> np.ndarray:
-    encoded_sets = np.zeros((len(tags_sets), len(ALL_APERTIUM_TAGS)))
+    encoded_sets = np.zeros((len(tags_sets), len(ALL_APERTIUM_TAGS_MAP)))
 
     for i, tag_set in enumerate(tags_sets):
         for tag in tag_set:
-            encoded_sets[i, ALL_APERTIUM_TAGS[tag]] += 1
+            encoded_sets[i, ALL_APERTIUM_TAGS_MAP[tag]] += 1
 
     return encoded_sets
 
@@ -53,7 +53,7 @@ class MorphoParsedSentence(object):
 
 
 if __name__ == "__main__":
-    with open("ky_ktmu-ud-train.apertium-kir.txt", "r", encoding="utf-8") as rf:
+    with open("apertium2ud/ky_ktmu-ud-train.apertium-kir.txt", "r", encoding="utf-8") as rf:
         for line in rf:
             lexical_units = parse(line.strip())
 

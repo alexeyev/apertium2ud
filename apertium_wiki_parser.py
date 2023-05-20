@@ -82,7 +82,7 @@ def parse_ud_cell(section: List[str], cell_content: str, apertium_tag: str=None)
     raise Exception(f"Something's changed on the page in {section}, should update the parser")
 
 
-def scrape_tags():
+def _scrape_tags():
     """ Scrape tag database from Apertium wiki """
 
     current, all_tags = [], {}
@@ -156,7 +156,7 @@ def scrape_tags():
 
 if __name__ == '__main__':
     import json
-    tags = scrape_tags()
+    tags = _scrape_tags()
 
-    with open("tags_map.json", "w+", encoding="utf-8") as wf:
+    with open("apertium2ud/resources/tags_map.json", "w+", encoding="utf-8") as wf:
         json.dump(tags, wf)
