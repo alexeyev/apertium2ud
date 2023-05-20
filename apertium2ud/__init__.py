@@ -2,8 +2,8 @@
 
 import json
 
-from apertium2ud import meta
-from apertium2ud._map_processing import _map2rules
+from . import meta
+from ._map_processing import _map2rules
 
 __version__ = meta.version
 __author__ = meta.authors[0]
@@ -12,7 +12,18 @@ __copyright__ = meta.copyright
 
 # ------- const -------
 
-RAW_WIKI_MAP = json.load(open("apertium2ud/resources/tags_map.json", "r", encoding="utf-8"))
+try:
+    import importlib.resources as pkg_resources
+except ImportError:
+    # Trying backported to PY<37 `importlib_resources`.
+    import importlib_resources as pkg_resources
+
+from . import resources
+
+with pkg_resources.path(resources, "tags_map.json") as filepath:
+    raw_text = open(filepath, "r+", encoding="utf-8").read().strip()
+
+RAW_WIKI_MAP = json.loads(raw_text)
 UD2APERTIUM_RULES = _map2rules(RAW_WIKI_MAP)
 
 POS_TAGS_LIST = sorted(list(set(RAW_WIKI_MAP["POS"].keys())

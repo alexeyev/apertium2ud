@@ -1,2 +1,2 @@
 include README.md
-include tags_map.json
+include apertium2ud/resources/*
