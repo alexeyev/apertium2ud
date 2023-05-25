@@ -13,5 +13,4 @@ cd apertium-kir/ && autoupdate && ./autogen.sh && ./configure && make
 echo "**** Testing..."
 echo "Бул кыргызча морфологиялык талдоо" | apertium -d . kir-morph
 
-cat ../ky_ktmu-ud-train.unannotated.txt | apertium -d . kir-morph > ../ky_ktmu-ud-train.apertium-kir.txt
-cat ../ky_ktmu-ud-test.unannotated.txt | apertium -d . kir-morph > ../ky_ktmu-ud-test.apertium-kir.txt
+cat ../ky_ktmu-ud.unannotated.txt | apertium -d . kir-morph > ../ky_ktmu-ud.apertium-kir.txt

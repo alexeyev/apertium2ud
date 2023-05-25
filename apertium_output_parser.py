@@ -25,7 +25,8 @@ def _get_btg(lexical_unit: LexicalUnit):
         more details, including the base form segmentation
         (with the corresponding tags for each segment).
 
-        This function retains only base forms, all the tags and their encoding as vectors in one bag.
+        This function retains only base forms, all the tags
+        and their encoding as vectors in one bag.
     """
     baseforms, tag_sets = [], []
 
@@ -53,7 +54,9 @@ class MorphoParsedSentence(object):
 
 
 if __name__ == "__main__":
-    with open("apertium2ud/ky_ktmu-ud-train.apertium-kir.txt", "r", encoding="utf-8") as rf:
+
+    with open("ky_ktmu-ud.apertium-kir.txt", "r", encoding="utf-8") as rf:
+
         for line in rf:
             lexical_units = parse(line.strip())
 
@@ -63,7 +66,8 @@ if __name__ == "__main__":
                         baseform (str): The base form (lemma, lexical form, citation form) of the reading.
                         tags (list of str): The morphological tags associated with the reading.
                 """
-                print("Original word:", item.wordform, item.knownness)
+                print("RAW:", item)
+                print("Original word:", item.wordform)
                 print()
 
                 for i_segm, possible_reading in enumerate(item.readings):

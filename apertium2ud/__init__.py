@@ -3,7 +3,7 @@
 import json
 
 from . import meta
-from ._map_processing import _map2rules
+from ._map_processing import _map_to_rules, feats2set
 
 __version__ = meta.version
 __author__ = meta.authors[0]
@@ -25,12 +25,17 @@ with pkg_resources.path(resources, "tags_map.json") as filepath:
     RAW_WIKI_MAP = json.loads(raw_text)
     del raw_text
 
-UD2APERTIUM_RULES = _map2rules(RAW_WIKI_MAP)
+UNDOCUMENTED_APERTIUM_SYMBOLS = {'recip', 'gpr_unac', 'mod_ind', 'gna_after', 'prc_plan', 'pcond', 'sim', 'mod_ass',
+                                 'prc_pcond', 'prc_cond', 'unk', 'opt', 'ger_unac', 'pih', 'prc_vol', 'gpr_pot2', 'equ',
+                                 'mod_dub', 'evid', 'unac', "coop", "qst", "emph", "subst", "gpr_pot", "ger_ppot",
+                                 "gpr_ppot", "advl", "prc_irre", "mod_tru", "gna_cond"}
+
+UD2APERTIUM_RULES, APERTIUM2UD_RULES = _map_to_rules(RAW_WIKI_MAP)
+for s in UNDOCUMENTED_APERTIUM_SYMBOLS: APERTIUM2UD_RULES[s] = []
 
 POS_TAGS_LIST = sorted(list(set(RAW_WIKI_MAP["POS"].keys())
                             .difference({"punkt"})
                             .union(RAW_WIKI_MAP["POS"]["punkt"].keys())))
-
 
 OTHER_TAGS_LIST = sorted(list(set([t for k, v in UD2APERTIUM_RULES for t in v if not t in POS_TAGS_LIST])))
 

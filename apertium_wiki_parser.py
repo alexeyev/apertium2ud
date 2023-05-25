@@ -7,6 +7,7 @@ from typing import List
 
 
 def parse_ud_cell(section: List[str], cell_content: str, apertium_tag: str=None) -> List[str]:
+    """ Parsing the content of the cell describing Universal tags """
 
     cell_content = cell_content.strip()
     section = [s.strip() for s in section]
@@ -131,6 +132,11 @@ def _scrape_tags():
         elif line.startswith('| <code>'):
 
             tag = line.split('<code>')[1].split('</code>')[0]
+
+            # todo: hardcode fix; apertium-kir returns <subst>, not <subs>
+            # if tag == "subs":
+            #     tag = "subst"
+
             gloss = line.split('||')[1].strip().replace('"', "'")
 
             if len(line.split('||')) > 3:
