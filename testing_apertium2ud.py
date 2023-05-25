@@ -1,10 +1,6 @@
 # coding: utf-8
 
-import numpy as np
-
-from streamparser import parse, LexicalUnit
-from typing import Set, List
-from apertium2ud import ALL_APERTIUM_TAGS_MAP
+from streamparser import parse
 from apertium2ud.convert import a2ud
 
 if __name__ == "__main__":

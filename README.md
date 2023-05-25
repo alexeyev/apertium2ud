@@ -11,8 +11,19 @@ To build the machine-readable mapping, run
 ```bash
 python apertium_wiki_parser.py
 ```
+## Apertium to Universal tags
 
-## UD to Apertium
+```
+>>> from apertium2ud.convert import a2ud
+>>> tags = ["n", "pl", "acc"]
+>>> a2ud(tags)
+(['NOUN'], ['Number=Plur', 'Case=Acc'])
+>>> tags_sophisticated = ["v", "tv", "ger", "nom", "cop", "aor", "p3", "pl"]
+>>> a2ud(tags_sophisticated)
+(['VERB', 'AUX'], ['Subcat=Tran', 'VerbForm=Vnoun', 'Case=Nom', 'Tense=Past', 'Person=3', 'Number=Plur'])
+```
+
+## Universal tags to Apertium
 
 So far the conversion is far from perfect
 ```
@@ -35,8 +46,6 @@ So far the conversion is far from perfect
 ## TODO
 
 * Should sections `chunks` and [XML tags](https://wiki.apertium.org/w/index.php?title=List_of_symbols#XML_tags) be added? [No](https://github.com/apertium/apertium/issues/185).
-* Add conversions Apertium -> UD, UD -> Apertium based on the constructed JSON file
-* Upload the converter as a package to PyPI
 * Tests: Apertium -> UD -> Apertium, UD -> Apertium -> UD (sometimes losses are inevitable)
 
 ## How to cite
