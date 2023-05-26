@@ -47,6 +47,7 @@ So far the conversion is far from perfect
 
 * Should sections `chunks` and [XML tags](https://wiki.apertium.org/w/index.php?title=List_of_symbols#XML_tags) be added? [No](https://github.com/apertium/apertium/issues/185).
 * Tests: Apertium -> UD -> Apertium, UD -> Apertium -> UD (sometimes losses are inevitable)
+* Add the possibility to add the rules based on a `.udx` file, which usually describes custom tags
 
 ## How to cite
 
