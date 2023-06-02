@@ -25,13 +25,13 @@ with pkg_resources.path(resources, "tags_map.json") as filepath:
     RAW_WIKI_MAP = json.loads(raw_text)
     del raw_text
 
-UNDOCUMENTED_APERTIUM_SYMBOLS = {'recip', 'gpr_unac', 'mod_ind', 'gna_after', 'prc_plan', 'pcond', 'sim', 'mod_ass',
-                                 'prc_pcond', 'prc_cond', 'unk', 'opt', 'ger_unac', 'pih', 'prc_vol', 'gpr_pot2', 'equ',
-                                 'mod_dub', 'evid', 'unac', "coop", "qst", "emph", "subst", "gpr_pot", "ger_ppot",
-                                 "gpr_ppot", "advl", "prc_irre", "mod_tru", "gna_cond"}
+# UNDOCUMENTED_APERTIUM_SYMBOLS = {'recip', 'gpr_unac', 'mod_ind', 'gna_after', 'prc_plan', 'pcond', 'sim', 'mod_ass',
+#                                  'prc_pcond', 'prc_cond', 'unk', 'opt', 'ger_unac', 'pih', 'prc_vol', 'gpr_pot2', 'equ',
+#                                  'mod_dub', 'evid', 'unac', "coop", "qst", "emph", "subst", "gpr_pot", "ger_ppot",
+#                                  "gpr_ppot", "advl", "prc_irre", "mod_tru", "gna_cond"}
 
 UD2APERTIUM_RULES, APERTIUM2UD_RULES = _map_to_rules(RAW_WIKI_MAP)
-for s in UNDOCUMENTED_APERTIUM_SYMBOLS: APERTIUM2UD_RULES[s] = []
+# for s in UNDOCUMENTED_APERTIUM_SYMBOLS: APERTIUM2UD_RULES[s] = []
 
 POS_TAGS_LIST = sorted(list(set(RAW_WIKI_MAP["POS"].keys())
                             .difference({"punkt"})

@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import sys
+
 from typing import List, Set, Collection
 
 from apertium2ud import UD2APERTIUM_RULES, APERTIUM2UD_RULES
@@ -28,7 +30,13 @@ def a2ud(tags: Collection[str]):
     result_tags, result_feats = [], []
 
     for tag in tags:
+
+        if tag not in APERTIUM2UD_RULES:
+            print(f"Apertium tag <{tag}> is not documented, skipping.", file=sys.stderr)
+            continue
+
         rules = APERTIUM2UD_RULES[tag]
+
         for rule in rules:
             if "tag" in rule:
                 result_tags.extend(rule["tag"])
