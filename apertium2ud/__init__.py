@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import json
+import sys
 
 from . import meta
 from ._map_processing import _map_to_rules, feats2set
@@ -25,13 +26,31 @@ with pkg_resources.path(resources, "tags_map.json") as filepath:
     RAW_WIKI_MAP = json.loads(raw_text)
     del raw_text
 
-# UNDOCUMENTED_APERTIUM_SYMBOLS = {'recip', 'gpr_unac', 'mod_ind', 'gna_after', 'prc_plan', 'pcond', 'sim', 'mod_ass',
-#                                  'prc_pcond', 'prc_cond', 'unk', 'opt', 'ger_unac', 'pih', 'prc_vol', 'gpr_pot2', 'equ',
-#                                  'mod_dub', 'evid', 'unac', "coop", "qst", "emph", "subst", "gpr_pot", "ger_ppot",
-#                                  "gpr_ppot", "advl", "prc_irre", "mod_tru", "gna_cond"}
+try:
+    with pkg_resources.path(resources, "custom.udx") as filepath:
+        default_udx_mapping = [line.strip().split("\t")
+                               for line in open(filepath, "r+", encoding="utf-8").readlines()
+                               if line.strip()]
+        default_udx_mapping = [(frozenset([tag for col in seq[:5] for tag in col.split("|")]).difference({"_"}),
+                                [{"tag": [seq[5]] if seq[5] != "_" else [],
+                                  "feats":
+                                      list(set([utag
+                                                for col in seq[6:]
+                                                for utag in col.split("|")])
+                                           .difference({"_"}))}])
+                               for seq in default_udx_mapping]
+        default_udx_mapping = dict(default_udx_mapping)
+        # print(default_udx_mapping)
+        # quit()
+except Exception as e:
+    default_udx_mapping = None
+    print("`custom.udx` was not packaged", file=sys.stderr)
+
 
 UD2APERTIUM_RULES, APERTIUM2UD_RULES = _map_to_rules(RAW_WIKI_MAP)
-# for s in UNDOCUMENTED_APERTIUM_SYMBOLS: APERTIUM2UD_RULES[s] = []
+
+# overriding
+for k, v in default_udx_mapping.items(): APERTIUM2UD_RULES[k] = v
 
 POS_TAGS_LIST = sorted(list(set(RAW_WIKI_MAP["POS"].keys())
                             .difference({"punkt"})

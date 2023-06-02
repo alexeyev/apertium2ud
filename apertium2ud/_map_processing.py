@@ -25,10 +25,12 @@ def _map_to_rules(tag_map):
         # if 'terminal' node (essentially, leaf node)
         if "t" in item:
             tags = item.get("tags", [])
+
             # ...add the rule to ud2a
             key = tuple(tags + sorted(item.get("feats", [])))
             value = name
             ud_combination2apertium[key].append(value)
+
             # ... add the rule to a2ud
             if len(tags) < 2:
                 apertium2ud_combination[name].append({"tag": item["tags"] if "tags" in item else [],
@@ -46,4 +48,4 @@ def _map_to_rules(tag_map):
 
     ud2a_results = sorted(list(ud_combination2apertium.items()), key=lambda x: len(x[0]), reverse=True)
 
-    return ud2a_results, dict(apertium2ud_combination)
+    return ud2a_results, {frozenset({k}): v for k, v in apertium2ud_combination.items()}
