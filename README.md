@@ -6,6 +6,8 @@ on the [information from Apertium Wiki](https://wiki.apertium.org/w/index.php?ti
 Loosely based on [this code](https://github.com/mr-martian/apertium-recursive-learning/blob/master/tags.py), 
 hence the GPLv3 license.
 
+NB! The latest version from PyPI (yes, you can install the tool via pip) is equipped with the [apertium-kir](https://github.com/apertium/apertium-kir/blob/main/apertium-kir.kir.udx) `.udx` file rules.
+
 To build the machine-readable mapping, run
 
 ```bash
