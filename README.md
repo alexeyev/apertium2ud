@@ -6,6 +6,13 @@ on the [information from Apertium Wiki](https://wiki.apertium.org/w/index.php?ti
 Loosely based on [this code](https://github.com/mr-martian/apertium-recursive-learning/blob/master/tags.py), 
 hence the GPLv3 license.
 
+To install, run
+
+```bash
+python -m pip install apertium2ud
+```
+The latest uploaded version is 0.0.4.
+
 To build the machine-readable mapping, run
 
 ```bash
