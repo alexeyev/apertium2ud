@@ -68,6 +68,7 @@ def a2ud(tags: List[str], disable_undocumented_tags_warnings=False):
         else:
             filtered_tags.append(tag)
 
+    tags = filtered_tags
     result_tags, result_feats = [], []
 
     for tags_subset in _powerset(tags):
