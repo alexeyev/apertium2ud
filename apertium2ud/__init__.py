@@ -55,6 +55,7 @@ for k, v in default_udx_mapping.items(): APERTIUM2UD_RULES[k] = v
 POS_TAGS_LIST = sorted(list(set(RAW_WIKI_MAP["POS"].keys())
                             .difference({"punkt"})
                             .union(RAW_WIKI_MAP["POS"]["punkt"].keys())))
+POS_TAGS_SET = set(POS_TAGS_LIST)
 
 OTHER_TAGS_LIST = sorted(list(set([t for k, v in UD2APERTIUM_RULES for t in v if not t in POS_TAGS_LIST])))
 
