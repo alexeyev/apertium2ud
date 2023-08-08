@@ -95,9 +95,9 @@ if __name__ == "__main__":
     df = pd.DataFrame(table)
     df["gloss-kyrgyz"] = None
     df["gloss-russian"] = None
-
-    df.to_csv("apertium.csv")
+    df["url"] = None
 
     with open("apertium_tags_description.md", "w+", encoding="utf-8") as wf:
-        df = df[["tag", "gloss-english", "gloss-kyrgyz", "gloss-russian", "tag-type"]]
+        df = df[["tag", "gloss-english", "gloss-kyrgyz", "gloss-russian", "url", "tag-type"]]
         wf.write(df.to_markdown(index=None))
+        df.to_csv("apertium_tags_description.csv", index=None)
