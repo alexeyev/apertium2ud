@@ -28,6 +28,8 @@ with pkg_resources.path(resources, "tags_map.json") as filepath:
 
 try:
     with pkg_resources.path(resources, "custom.udx") as filepath:
+        
+        # todo: looks horrible, should wrap into some nice functions
         default_udx_mapping = [line.strip().split("\t")
                                for line in open(filepath, "r+", encoding="utf-8").readlines()
                                if line.strip()]
@@ -40,8 +42,6 @@ try:
                                            .difference({"_"}))}])
                                for seq in default_udx_mapping]
         default_udx_mapping = dict(default_udx_mapping)
-        # print(default_udx_mapping)
-        # quit()
 except Exception as e:
     default_udx_mapping = None
     print("`custom.udx` was not packaged", file=sys.stderr)

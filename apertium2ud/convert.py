@@ -11,10 +11,10 @@
 
 import sys
 
-from typing import List, Set, Collection
+from typing import List, Set
+from itertools import chain, combinations
 
 from apertium2ud import UD2APERTIUM_RULES, APERTIUM2UD_RULES, POS_TAGS_SET
-from itertools import chain, combinations
 
 
 def _powerset(iterable):

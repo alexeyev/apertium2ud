@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+""" Preparing Apertium's symbols-related data """
 
 from collections import defaultdict
 
@@ -33,12 +33,15 @@ def _map_to_rules(tag_map):
 
             # ... add the rule to a2ud
             if len(tags) < 2:
-                apertium2ud_combination[name].append({"tag": item["tags"] if "tags" in item else [],
-                                                      "feats": item["feats"] if "feats" in item else []})
+                apertium2ud_combination[name].append({"tag": item["tags"]
+                                                                if "tags" in item else [],
+                                                      "feats": item["feats"]
+                                                                if "feats" in item else []})
             elif len(tags) == 2:
                 for tag in tags:
                     apertium2ud_combination[name].append({"tag": tag,
-                                                          "feats": item["feats"] if "feats" in item else []})
+                                                          "feats": item["feats"]
+                                                                    if "feats" in item else []})
             else:
                 raise AssertionError(f"Can't have tags {item['tags']} all at once")
         else:
@@ -46,6 +49,8 @@ def _map_to_rules(tag_map):
             for k in item:
                 queue.append((k, item[k]))
 
-    ud2a_results = sorted(list(ud_combination2apertium.items()), key=lambda x: len(x[0]), reverse=True)
+    ud2a_results = sorted(list(ud_combination2apertium.items()),
+                          key=lambda x: len(x[0]),
+                          reverse=True)
 
     return ud2a_results, {frozenset({k}): v for k, v in apertium2ud_combination.items()}
