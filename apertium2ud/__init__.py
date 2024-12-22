@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import json
 import sys
 
@@ -28,7 +26,7 @@ with pkg_resources.path(resources, "tags_map.json") as filepath:
 
 try:
     with pkg_resources.path(resources, "custom.udx") as filepath:
-        
+
         # todo: looks horrible, should wrap into some nice functions
         default_udx_mapping = [line.strip().split("\t")
                                for line in open(filepath, "r+", encoding="utf-8").readlines()

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
     Conversion functions.
 
@@ -9,10 +8,9 @@
     therefore they are given higher priority
 """
 
-import sys
-
-from typing import List, Set
+import logging
 from itertools import chain, combinations
+from typing import List, Set
 
 from apertium2ud import UD2APERTIUM_RULES, APERTIUM2UD_RULES, POS_TAGS_SET
 
@@ -20,7 +18,7 @@ from apertium2ud import UD2APERTIUM_RULES, APERTIUM2UD_RULES, POS_TAGS_SET
 def _powerset(iterable):
     """ All possible combinations of Apertium tags, from largest to smallest subsets """
     s = list(iterable)
-    return chain.from_iterable(combinations(s, r) for r in range(len(s)+1, 0, -1))
+    return chain.from_iterable(combinations(s, r) for r in range(len(s) + 1, 0, -1))
 
 
 def ud2a(upos: str, feats: Set[str]) -> List[str]:
@@ -81,7 +79,7 @@ def a2ud(tags: List[str], disable_undocumented_tags_warnings=False):
         if tags_subset not in APERTIUM2UD_RULES and len(tags_subset) == 1:
             (t,) = tags_subset
             if not disable_undocumented_tags_warnings:
-                print(f"<{t}> not documented, skipping.", file=sys.stderr)
+                logging.warning(f"<{t}> not documented, skipping.")
             continue
 
         rules = APERTIUM2UD_RULES[tags_subset]
