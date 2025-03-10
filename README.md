@@ -13,7 +13,11 @@ python -m pip install apertium2ud
 ```
 The latest uploaded version is 0.0.8.
 
-NB! The latest version from PyPI (yes, you can install the tool via pip) is equipped with the [apertium-kir](https://github.com/apertium/apertium-kir/blob/main/apertium-kir.kir.udx) `.udx` file rules.
+**NB!**
+
+1. The instrument is far from being perfect.
+2. It was originally developed for working with `apertium-kir`, i.e. with Kyrgyz language.
+3. The latest version from PyPI is equipped with the [apertium-kir](https://github.com/apertium/apertium-kir/blob/main/apertium-kir.kir.udx) `.udx` file rules. For other languages, you may need to make some updates.
 
 To build the machine-readable mapping, run
 
