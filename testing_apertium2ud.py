@@ -1,6 +1,6 @@
-# coding: utf-8
 
 from streamparser import parse
+
 from apertium2ud.convert import a2ud
 
 if __name__ == "__main__":

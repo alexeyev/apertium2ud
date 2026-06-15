@@ -1,9 +1,9 @@
-# -*- coding: utf-8 -*-
+
+from typing import List, Set
 
 import numpy as np
+from streamparser import LexicalUnit, parse
 
-from streamparser import parse, LexicalUnit
-from typing import Set, List
 from apertium2ud import ALL_APERTIUM_TAGS_MAP
 
 
@@ -30,7 +30,7 @@ def _get_btg(lexical_unit: LexicalUnit):
     """
     baseforms, tag_sets = [], []
 
-    for i_segm, possible_reading in enumerate(lexical_unit.readings):
+    for possible_reading in lexical_unit.readings:
         baseform = "".join([r.baseform for r in possible_reading])
         all_tags = set([t for r in possible_reading for t in r.tags])
         baseforms.append(baseform)
@@ -39,7 +39,7 @@ def _get_btg(lexical_unit: LexicalUnit):
     return baseforms, tag_sets, _vectorize_tags(tag_sets)
 
 
-class MorphoParsedSentence(object):
+class MorphoParsedSentence:
 
     def __init__(self, parser_output: str):
         self.raw_parser_string = parser_output.strip()
@@ -70,7 +70,7 @@ if __name__ == "__main__":
                 print("Original word:", item.wordform)
                 print()
 
-                for i_segm, possible_reading in enumerate(item.readings):
+                for possible_reading in item.readings:
                     segmentation = "|".join([r.baseform for r in possible_reading])
                     all_tags = [t for r in possible_reading for t in r.tags]
                     all_tags_str = "".join([f"<{t}>" for t in all_tags])

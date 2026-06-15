@@ -1,5 +1,5 @@
 package = "apertium2ud"
-version = "0.0.8"
+version = "0.0.9"
 authors = ["Anton Alekseev"]
 authors_string = ", ".join(authors)
 emails = ["anton.m.alexeyev@gmail.com"]

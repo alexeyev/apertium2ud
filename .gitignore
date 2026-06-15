@@ -1,6 +1,58 @@
-*.idea
-*.pyc
-*~
+# --- apertium2ud generated resources (built at packaging/CI time, never committed) ---
+apertium2ud/resources/tags_map.json
+apertium2ud/resources/*.udx
+
+# --- submodules checkout target ---
+# (the submodule dir itself is tracked via .gitmodules; build artifacts under it are not)
+
+# --- external corpora pulled for integration tests ---
+# (UD treebanks live under external/ as submodules and MUST stay tracked; only
+#  ignore stray top-level copies, not the submodule paths)
+/UD_Kyrgyz-KTMU/
+/UD_Kazakh-KTB/
+/UD_*
+ky_ktmu-ud*.txt
+ky_ktmu-ud*.conllu
+kk_ktb-ud*.conllu
+# (original repo ignored all *.txt; kept to avoid committing scratch corpora)
 *.txt
-UD_*
-apertium-kir
+!requirements.txt
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+wheels/
+*.whl
+.installed.cfg
+*.egg
+
+# --- venvs ---
+.venv/
+venv/
+env/
+ENV/
+
+# --- test / coverage ---
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.mypy_cache/
+.ruff_cache/
+
+# --- IDEs ---
+.idea
+*.idea
+.vscode/
+*.swp
+*~
+
+# --- OS ---
+.DS_Store
+Thumbs.db

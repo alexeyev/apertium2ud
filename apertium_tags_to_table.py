@@ -1,8 +1,8 @@
-# coding: utf-8
 # quick and dirty table preparation
 
-import pandas as pd
 import json
+
+import pandas as pd
 
 if __name__ == "__main__":
 
@@ -18,7 +18,6 @@ if __name__ == "__main__":
                 current = raw_json[segment][pos_tag]
                 if "t" in current and current["t"]:
                     # print(" ", pos_tag, end=" -> ")
-                    # print(f"{','.join(current.get('tags', '?'))}\t{','.join(current.get('feats', '?'))}\t{current.get('gloss', '?')}")
                     table.append({
                         "tag": pos_tag,
                         "tag-type": segment,
@@ -32,7 +31,6 @@ if __name__ == "__main__":
                         # print(" ", lower_pos_tag, end=" -> ")
                         lower_current = current[lower_pos_tag]
                         if "t" in lower_current and lower_current["t"]:
-                            # print(f"{','.join(lower_current.get('tags', '?'))}\t{','.join(lower_current.get('feats', '?'))}\t{lower_current.get('gloss', '?')}")
                             table.append({
                                 "tag": lower_pos_tag,
                                 "tag-type": pos_tag,
@@ -50,7 +48,6 @@ if __name__ == "__main__":
                     current = raw_json[segment][subsegment][tag]
                     if "t" in current and current["t"]:
                         # print(" ", tag, end=" -> ")
-                        # print(f"{','.join(current.get('tags', '?'))}\t{','.join(current.get('feats', '?'))}\t{current.get('gloss', '?')}")
                         table.append({
                             "tag": tag,
                             "tag-type": subsegment,
@@ -65,7 +62,6 @@ if __name__ == "__main__":
                             lower_current = current[lower_tag]
                             if "t" in lower_current and lower_current["t"]:
                                 # print(
-                                #     f"{','.join(lower_current.get('tags', '?'))}\t{','.join(lower_current.get('feats', '?'))}\t{lower_current.get('gloss', '?')}")
                                 table.append({
                                     "tag": lower_tag,
                                     "tag-type": tag,

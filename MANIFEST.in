@@ -1,2 +1,15 @@
 include README.md
-include apertium2ud/resources/*
+include LICENSE
+include pyproject.toml
+
+# In-tree PEP 517 backend and resource builders must be in the sdist so that
+# building a wheel *from* the sdist can find the backend module.
+include _build_backend.py
+include build_resources.py
+include apertium_wiki_parser.py
+
+# Ship the generated resources inside the sdist so a wheel can be built from it
+# without network access or the Apertium submodules present.
+include apertium2ud/resources/*.json
+include apertium2ud/resources/*.udx
+recursive-include apertium2ud/resources *.py

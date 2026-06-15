@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 
 import html
-import requests
-
 from typing import List
+
+import requests
 
 
 def parse_ud_cell(section: List[str], cell_content: str, apertium_tag: str=None) -> List[str]:
@@ -83,7 +82,7 @@ def parse_ud_cell(section: List[str], cell_content: str, apertium_tag: str=None)
     raise Exception(f"Something's changed on the page in {section}, should update the parser")
 
 
-def _scrape_tags():
+def scrape_tags():
     """ Scrape tag database from Apertium wiki """
 
     current, all_tags = [], {}
@@ -161,8 +160,15 @@ def _scrape_tags():
 
 
 if __name__ == '__main__':
+    # Backwards-compatible entry point. Historically this script wrote
+    # apertium2ud/resources/tags_map.json directly; that behaviour is kept.
     import json
-    tags = _scrape_tags()
+    tags = scrape_tags()
 
-    with open("apertium2ud/resources/tags_map.json", "w+", encoding="utf-8") as wf:
-        json.dump(tags, wf)
+    import os
+    out_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                           "apertium2ud", "resources")
+    os.makedirs(out_dir, exist_ok=True)
+
+    with open(os.path.join(out_dir, "tags_map.json"), "w+", encoding="utf-8") as wf:
+        json.dump(tags, wf, ensure_ascii=False)

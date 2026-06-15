@@ -1,8 +1,6 @@
-# coding: utf-8
 
-from apertium2ud.convert import ud2a
 from apertium2ud import feats2set
-
+from apertium2ud.convert import ud2a
 
 if __name__ == "__main__":
 
