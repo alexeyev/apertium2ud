@@ -1,0 +1,77 @@
+[build-system]
+requires = [
+    "setuptools>=61.0",
+    "wheel",
+    "requests>=2.25",
+]
+build-backend = "_build_backend"
+backend-path = ["."]
+
+[project]
+name = "apertium2ud"
+version = "0.0.9"
+description = "Parser and converter between the Apertium and Universal Dependencies tagsets."
+readme = "README.md"
+requires-python = ">=3.7"
+license = { text = "GPL-3.0-or-later" }
+authors = [
+    { name = "Anton Alekseev", email = "anton.m.alexeyev@gmail.com" },
+]
+keywords = ["natural language processing", "apertium", "morphology", "universal dependencies"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+    "Topic :: Text Processing :: Linguistic",
+]
+dependencies = [
+    "conllu>=4.5.2",
+    "apertium-streamparser>=5.0.2",
+    "numpy>=1.21",
+]
+
+[project.urls]
+Homepage = "https://github.com/alexeyev/apertium2ud"
+Repository = "https://github.com/alexeyev/apertium2ud"
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0",
+]
+build = [
+    "requests>=2.25",
+    "pandas>=1.3",
+    "tabulate>=0.8",
+]
+
+[tool.setuptools]
+# Custom in-tree build backend wraps setuptools to generate resources first.
+# (see _build_backend.py)
+
+[tool.setuptools.packages.find]
+include = ["apertium2ud*"]
+
+[tool.setuptools.package-data]
+apertium2ud = ["resources/*.json", "resources/*.udx"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+python_files = ["test_*.py", "integration_*.py"]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
+
+[tool.ruff]
+# Vendored Apertium repos and UD treebanks live under external/ as submodules
+# and must not be linted or modified.
+extend-exclude = ["external"]
+line-length = 120
+target-version = "py38"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]
+ignore = [
+    "E741",   # ambiguous variable name (l): used in the dense .udx parsing code
+    "UP015",  # redundant open modes: the codebase uses "r+" deliberately
+]

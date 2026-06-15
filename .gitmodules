@@ -1,0 +1,64 @@
+[submodule "external/apertium-kir"]
+	path = external/apertium-kir
+	url = https://github.com/apertium/apertium-kir.git
+	branch = main
+[submodule "external/apertium-kaz"]
+	path = external/apertium-kaz
+	url = https://github.com/apertium/apertium-kaz.git
+	branch = main
+[submodule "external/UD_Kyrgyz-KTMU"]
+	path = external/UD_Kyrgyz-KTMU
+	url = https://github.com/UniversalDependencies/UD_Kyrgyz-KTMU.git
+	branch = master
+[submodule "external/UD_Kazakh-KTB"]
+	path = external/UD_Kazakh-KTB
+	url = https://github.com/UniversalDependencies/UD_Kazakh-KTB.git
+	branch = master
+[submodule "external/apertium-tat"]
+	path = external/apertium-tat
+	url = https://github.com/apertium/apertium-tat.git
+	branch = master
+[submodule "external/UD_Tatar-NMCTT"]
+	path = external/UD_Tatar-NMCTT
+	url = https://github.com/UniversalDependencies/UD_Tatar-NMCTT.git
+	branch = master
+[submodule "external/apertium-uig"]
+	path = external/apertium-uig
+	url = https://github.com/apertium/apertium-uig.git
+	branch = master
+[submodule "external/apertium-tur"]
+	path = external/apertium-tur
+	url = https://github.com/apertium/apertium-tur.git
+	branch = master
+[submodule "external/apertium-uzb"]
+	path = external/apertium-uzb
+	url = https://github.com/apertium/apertium-uzb.git
+	branch = master
+[submodule "external/apertium-aze"]
+	path = external/apertium-aze
+	url = https://github.com/apertium/apertium-aze.git
+	branch = master
+[submodule "external/UD_Uyghur-UDT"]
+	path = external/UD_Uyghur-UDT
+	url = https://github.com/UniversalDependencies/UD_Uyghur-UDT.git
+	branch = master
+[submodule "external/UD_Turkish-IMST"]
+	path = external/UD_Turkish-IMST
+	url = https://github.com/UniversalDependencies/UD_Turkish-IMST.git
+	branch = master
+[submodule "external/UD_Uzbek-UT"]
+	path = external/UD_Uzbek-UT
+	url = https://github.com/UniversalDependencies/UD_Uzbek-UT.git
+	branch = master
+[submodule "external/UD_Azerbaijani-TueCL"]
+	path = external/UD_Azerbaijani-TueCL
+	url = https://github.com/UniversalDependencies/UD_Azerbaijani-TueCL.git
+	branch = master
+[submodule "external/apertium-sah"]
+	path = external/apertium-sah
+	url = https://github.com/apertium/apertium-sah.git
+	branch = master
+[submodule "external/UD_Yakut-YKTDT"]
+	path = external/UD_Yakut-YKTDT
+	url = https://github.com/UniversalDependencies/UD_Yakut-YKTDT.git
+	branch = master
