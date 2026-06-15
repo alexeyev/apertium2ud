@@ -70,8 +70,17 @@ line-length = 120
 target-version = "py38"
 
 [tool.ruff.lint]
-select = ["E", "F", "W", "I", "UP", "B"]
+select = ["E", "F", "W", "I", "UP", "B", "LOG", "G"]
 ignore = [
     "E741",   # ambiguous variable name (l): used in the dense .udx parsing code
     "UP015",  # redundant open modes: the codebase uses "r+" deliberately
 ]
+
+[tool.ruff.lint.per-file-ignores]
+# Build/CLI scripts: print() to stdout is the right channel for build output,
+# so the logging rules (LOG/G) and flake8-print do not apply there.
+"build_resources.py" = ["G", "LOG"]
+"_build_backend.py" = ["G", "LOG"]
+"apertium_wiki_parser.py" = ["G", "LOG"]
+"apertium_tags_to_table.py" = ["G", "LOG"]
+"apertium_output_parser.py" = ["G", "LOG"]

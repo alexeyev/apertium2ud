@@ -1,16 +1,9 @@
 import json
-import sys
+import logging
 
-from . import meta
+from . import meta, resources
 from ._map_processing import _map_to_rules
 from ._map_processing import feats2set as feats2set  # re-exported public API
-
-__version__ = meta.version
-__author__ = meta.authors[0]
-__license__ = meta.license
-__copyright__ = meta.copyright
-
-# ------- const -------
 
 try:
     import importlib.resources as pkg_resources
@@ -18,7 +11,14 @@ except ImportError:
     # Trying backported to PY<37 `importlib_resources`.
     import importlib_resources as pkg_resources
 
-from . import resources
+logger = logging.getLogger(__name__)
+
+__version__ = meta.version
+__author__ = meta.authors[0]
+__license__ = meta.license
+__copyright__ = meta.copyright
+
+# ------- const -------
 
 with pkg_resources.path(resources, "tags_map.json") as filepath:
     raw_text = open(filepath, "r+", encoding="utf-8").read().strip()
@@ -104,7 +104,7 @@ try:
         default_udx_mapping = _load_udx_mapping(filepath)
 except Exception:
     default_udx_mapping = None
-    print("`custom.udx` was not packaged", file=sys.stderr)
+    logger.warning("`custom.udx` was not packaged")
 
 
 UD2APERTIUM_RULES, APERTIUM2UD_RULES = _map_to_rules(RAW_WIKI_MAP)

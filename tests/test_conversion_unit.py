@@ -13,14 +13,9 @@
     The CI workflow runs the resource build before invoking pytest.
 """
 
-import logging
 import re
 
 import pytest
-
-# Silence the "tag not documented" warnings the converter emits by design.
-logging.disable(logging.WARNING)
-
 
 # --------------------------------------------------------------------------- #
 #  Import / smoke
@@ -144,6 +139,59 @@ def test_feats2set_handles_none():
 # --------------------------------------------------------------------------- #
 #  Determinism
 # --------------------------------------------------------------------------- #
+
+def test_tv_iv_convert_and_are_symmetric():
+    """ Issue #1: tv/iv were dropped by a2ud while ud2a still mapped them.
+        a2ud must now emit Subcat (matching the wiki + ud2a), in both directions. """
+    from apertium2ud import feats2set
+    from apertium2ud.convert import a2ud, ud2a
+
+    # forward
+    _, tv_feats = a2ud(["tv"], disable_undocumented_tags_warnings=True)
+    _, iv_feats = a2ud(["iv"], disable_undocumented_tags_warnings=True)
+    assert "Subcat=Tran" in tv_feats
+    assert "Subcat=Intr" in iv_feats
+
+    # backward (was already working; assert it stays consistent)
+    tran = {t for g in ud2a("VERB", feats2set({"Subcat": "Tran"})) for t in g}
+    intr = {t for g in ud2a("VERB", feats2set({"Subcat": "Intr"})) for t in g}
+    assert "tv" in tran
+    assert "iv" in intr
+
+
+def test_mf_stays_suppressed():
+    """ The empty-override removal must NOT resurrect tags whose wiki mapping is
+        itself invalid: mf -> Gender=Masc,Fem (a comma value) must stay dropped,
+        so no invalid UD feature value is produced. """
+    from apertium2ud.convert import a2ud
+    _, feats = a2ud(["n", "mf"], disable_undocumented_tags_warnings=True)
+    assert not any("," in f for f in feats)
+    assert "Gender=Masc,Fem" not in feats
+
+
+def test_report_unmapped_surfaces_undocumented_tags():
+    """ Issue #1: undocumented apertium-kir subtags should be surfaceable. """
+    from apertium2ud.convert import a2ud
+    _, _, unmapped = a2ud(
+        ["v", "ger_ppot", "prc_plan", "p3"],
+        report_unmapped=True, disable_undocumented_tags_warnings=True,
+    )
+    assert "ger_ppot" in unmapped
+    assert "prc_plan" in unmapped
+    assert "p3" not in unmapped
+
+
+def test_report_unmapped_is_opt_in():
+    from apertium2ud.convert import a2ud
+    assert len(a2ud(["n", "pl"])) == 2
+
+
+def test_supplementary_equ_prc_irre():
+    """ Issue #1: equ -> Case=Equ and prc_irre -> Mood=Irr (spec-grounded). """
+    from apertium2ud.convert import a2ud
+    assert "Case=Equ" in a2ud(["n", "equ"])[1]
+    assert "Mood=Irr" in a2ud(["v", "prc_irre"])[1]
+
 
 def test_a2ud_is_deterministic():
     from apertium2ud.convert import a2ud
