@@ -93,6 +93,48 @@ def build_tags_map(skip_wiki: bool = False) -> None:
     print(f"[build_resources] wrote {target} (top-level POS entries: {n_pos})")
 
 
+def _wiki_mapped_tags():
+    """ Set of Apertium tags that the wiki 'List of symbols' map assigns a
+        non-empty UD mapping (a POS and/or at least one feature). Read from the
+        already-generated resources/tags_map.json (build_tags_map runs first).
+        Used to decide which empty-override .udx rows actually suppress a real
+        wiki mapping (e.g. tv/iv) versus which are deliberately featureless. """
+    path = os.path.join(RESOURCES_DIR, "tags_map.json")
+    mapped = set()
+    try:
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+    except (OSError, ValueError):
+        return mapped
+
+    def _valid_mapping(v):
+        """ True if this leaf maps to a POS and/or features, and none of its
+            feature values is a comma-joined (invalid UD) value. A comma value
+            means the wiki entry itself is defective (e.g. mf -> Gender=Masc,Fem);
+            such overrides are left in place rather than resurrected. """
+        if not (v.get("tags") or v.get("feats")):
+            return False
+        for feat in v.get("feats") or []:
+            if "=" in feat and "," in feat.split("=", 1)[1]:
+                return False
+        return True
+
+    def walk(d):
+        if not isinstance(d, dict):
+            return
+        for k, v in d.items():
+            if isinstance(v, dict):
+                if v.get("t") and _valid_mapping(v):
+                    mapped.add(k)
+                walk(v)
+
+    walk(data)
+    return mapped
+
+
+_WIKI_MAPPED_TAGS = set()  # populated at build time by copy_udx_files
+
+
 def _sanitize_udx_text(text: str, lang: str) -> str:
     """ Repair known upstream .udx defects that would otherwise emit invalid
         UD output. Each repair is logged so it stays auditable, and this runs on
@@ -122,6 +164,7 @@ def _sanitize_udx_text(text: str, lang: str) -> str:
     out_lines = []
     n_dropped = 0
     n_renamed = 0
+    n_empty_override = 0
     # matches a feature token like `Name=Val1,Val2` (one or more commas)
     bad_feat = re.compile(r"(?<![|=])\b([A-Za-z]+(?:\[[a-z]+\])?)=([^|\t,]+(?:,[^|\t,]+)+)")
 
@@ -130,6 +173,27 @@ def _sanitize_udx_text(text: str, lang: str) -> str:
             out_lines.append(raw)
             continue
         cols = raw.split("\t")
+
+        # Drop "empty-override" rows ONLY where they suppress a mapping the wiki
+        # "List of symbols" actually defines. A single-tag row mapping the tag to
+        # NO UD POS and NO features (cols 5.. all "_") erases the wiki entry for
+        # that tag in the forward direction, even though ud2a still maps it in
+        # reverse. The clear case is <tv>/<iv>: the wiki documents
+        # tv -> Subcat=Tran and iv -> Subcat=Intr, so a2ud (empty) and ud2a
+        # (Subcat) disagree. Removing only these wiki-backed overrides makes the
+        # directions symmetric WITHOUT resurrecting tags the maintainer
+        # deliberately suppressed (e.g. proper-noun subtypes <al>/<ant>/<org>...
+        # which the wiki itself leaves featureless).
+        if len(cols) >= 8:
+            tag_cols = [c for c in cols[:5] if c != "_"]
+            result_cols = [c for c in cols[5:] if c != "_"]
+            if (len(tag_cols) == 1 and not result_cols
+                    and tag_cols[0] in _WIKI_MAPPED_TAGS):
+                print(f"[build_resources] {lang}.udx: dropping empty-override "
+                      f"row for <{tag_cols[0]}> (wiki maps it; lets it through)")
+                n_empty_override += 1
+                continue
+
         # feature columns are 6.. (0-indexed); POS is col 5, tags are 0..4
         for ci in range(6, len(cols)):
             cell = cols[ci]
@@ -157,13 +221,34 @@ def _sanitize_udx_text(text: str, lang: str) -> str:
             cols[ci] = "|".join(new_tokens) if new_tokens else "_"
         out_lines.append("\t".join(cols))
 
-    if n_dropped or n_renamed:
+    if n_dropped or n_renamed or n_empty_override:
         print(f"[build_resources] {lang}.udx: sanitized "
-              f"{n_dropped} dropped, {n_renamed} renamed feature(s)")
+              f"{n_dropped} dropped, {n_renamed} renamed, "
+              f"{n_empty_override} empty-override row(s) removed")
 
     # preserve trailing newline behaviour of the source
     suffix = "\n" if text.endswith("\n") else ""
     return "\n".join(out_lines) + suffix
+
+
+def _supplementary_rules(lang: str) -> str:
+    """ Extra .udx rows for tags that are missing from BOTH the wiki map and the
+        upstream .udx, but have an unambiguous, spec-grounded UD mapping. Only
+        clearly-standard UD mappings are added; tags whose correct UD feature is
+        a genuine judgement call (apertium-kir's advl, mod_ind, ger_ppot,
+        prc_pcond, prc_plan) are intentionally NOT added (see issue #1).
+
+        Columns: 5 Apertium tag-group cols, 1 UD POS col, 2 UD feature cols. """
+    if lang != "kir":
+        return ""
+    rows = [
+        ("equ", "Case=Equ"),       # equative case; Case=Equ is standard UD,
+                                   # attested in UD_Kyrgyz-KTMU
+        ("prc_irre", "Mood=Irr"),  # irrealis; Mood=Irr is standard UD
+    ]
+    print(f"[build_resources] {lang}.udx: appended {len(rows)} supplementary "
+          f"rule(s) for tags missing upstream (equ, prc_irre)")
+    return "".join(f"_\t_\t{tag}\t_\t_\t_\t{feat}\t_\n" for tag, feat in rows)
 
 
 def copy_udx_files(langs: List[str]) -> Dict[str, str]:
@@ -174,6 +259,11 @@ def copy_udx_files(langs: List[str]) -> Dict[str, str]:
         Returns a {lang: written_path} dict. """
     os.makedirs(RESOURCES_DIR, exist_ok=True)
     written: Dict[str, str] = {}
+
+    # Compute once: which tags the wiki map actually maps (used by the sanitiser
+    # to decide which empty-override rows suppress a real mapping, e.g. tv/iv).
+    global _WIKI_MAPPED_TAGS
+    _WIKI_MAPPED_TAGS = _wiki_mapped_tags()
 
     for lang in langs:
         src = _udx_source_path(lang)
@@ -190,6 +280,11 @@ def copy_udx_files(langs: List[str]) -> Dict[str, str]:
         with open(src, "r", encoding="utf-8") as rf:
             udx_text = rf.read()
         udx_text = _sanitize_udx_text(udx_text, lang)
+        supplement = _supplementary_rules(lang)
+        if supplement:
+            if not udx_text.endswith("\n"):
+                udx_text += "\n"
+            udx_text += supplement
 
         dst = os.path.join(RESOURCES_DIR, f"{lang}.udx")
         with open(dst, "w", encoding="utf-8") as wf:

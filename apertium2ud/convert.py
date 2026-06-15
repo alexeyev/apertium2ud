@@ -14,6 +14,8 @@ from typing import List, Set
 
 from apertium2ud import APERTIUM2UD_RULES, POS_TAGS_SET, UD2APERTIUM_RULES
 
+logger = logging.getLogger(__name__)
+
 
 def _powerset(iterable, max_size=None):
     """ All combinations of Apertium tags, from largest to smallest subsets.
@@ -64,7 +66,8 @@ def ud2a(upos: str, feats: Set[str]) -> List[str]:
     return results
 
 
-def a2ud(tags: List[str], disable_undocumented_tags_warnings=False, rules=None):
+def a2ud(tags: List[str], disable_undocumented_tags_warnings=False, rules=None,
+         report_unmapped=False):
     """
         Apertium tagset to universal tagset
         :param tags: all Apertium tags for a given word in the order of parsing (important!)
@@ -72,7 +75,10 @@ def a2ud(tags: List[str], disable_undocumented_tags_warnings=False, rules=None):
                 about unknown tags (which are ignored by design)
         :param rules: optional APERTIUM2UD rule dict to use instead of the default
                 (Kyrgyz) rules; obtain one via apertium2ud.load_language_rules(lang)
-        :return: (upos tags, feats)
+        :param report_unmapped: if True, also return the sorted list of input
+                tags that produced no UD POS or feature (e.g. undocumented
+                apertium-kir subtags). Lets callers see silent drops.
+        :return: (upos tags, feats) or (upos tags, feats, unmapped) if report_unmapped
     """
     if rules is None:
         rules = APERTIUM2UD_RULES
@@ -91,6 +97,7 @@ def a2ud(tags: List[str], disable_undocumented_tags_warnings=False, rules=None):
 
     tags = filtered_tags
     result_tags, result_feats = [], []
+    contributing = set()  # tags that produced at least one POS/feature
 
     # Only subsets up to the largest rule key can ever match; bounding the
     # powerset size keeps long readings from blowing up exponentially.
@@ -106,12 +113,14 @@ def a2ud(tags: List[str], disable_undocumented_tags_warnings=False, rules=None):
         if tags_subset not in rules and len(tags_subset) == 1:
             (t,) = tags_subset
             if not disable_undocumented_tags_warnings:
-                logging.warning(f"<{t}> not documented, skipping.")
+                logger.warning("<%s> not documented, skipping.", t)
             continue
 
         matched_rules = rules[tags_subset]
 
         for rule in matched_rules:
+            if rule.get("tag") or rule.get("feats"):
+                contributing.update(tags_subset)
             if "tag" in rule:
                 result_tags.extend(rule["tag"])
             if "feats" in rule:
@@ -124,5 +133,9 @@ def a2ud(tags: List[str], disable_undocumented_tags_warnings=False, rules=None):
     # in which values were first produced.
     result_tags = list(dict.fromkeys(result_tags))
     result_feats = list(dict.fromkeys(result_feats))
+
+    if report_unmapped:
+        unmapped = sorted(t for t in tags if t not in contributing)
+        return result_tags, result_feats, unmapped
 
     return result_tags, result_feats

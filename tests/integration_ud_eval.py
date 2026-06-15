@@ -37,8 +37,6 @@ import logging
 import os
 import sys
 
-logging.disable(logging.WARNING)
-
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 
@@ -385,6 +383,10 @@ def test_real_single_readings_are_valid_ud():
 
 
 if __name__ == "__main__":
+    # When run directly as a report, raise the package logger's level so the
+    # per-token "undocumented tag" warnings don't drown the output. (Under
+    # pytest this is handled by the conftest fixture instead.)
+    logging.getLogger("apertium2ud").setLevel(logging.ERROR)
     verbose = "--verbose" in sys.argv or "-v" in sys.argv
     requested = [a for a in sys.argv[1:] if not a.startswith("-")]
     langs = requested or list(TREEBANKS)
