@@ -9,10 +9,10 @@ backend-path = ["."]
 
 [project]
 name = "apertium2ud"
-version = "0.0.9"
+version = "0.0.10"
 description = "Parser and converter between the Apertium and Universal Dependencies tagsets."
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 license = { text = "GPL-3.0-or-later" }
 authors = [
     { name = "Anton Alekseev", email = "anton.m.alexeyev@gmail.com" },
